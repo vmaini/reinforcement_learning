@@ -43,8 +43,6 @@ for i in range(num_episodes):
             break
     rewards_list.append(reward_sum)
 
-# t = np.arange(0,num_episodes,1)
-# plt.plot(t,rewards_list,'b')
 plt.hist(rewards_list)
 plt.show()
 
