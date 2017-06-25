@@ -42,7 +42,12 @@ for i in range(num_episodes):
         if done:
             break
     rewards_list.append(reward_sum)
+    running_rewards.append(running_reward)
 
+    running_reward += reward_sum
+    if i % 100 == 0:
+        print "epoch %d reward: %d" % (i/100, running_reward)
+        running_reward = 0
 
 plt.hist(rewards_list, label = "num episodes", facecolor='g', alpha=.6)
 plt.title('Q-table performance: FrozenLake-v0')
@@ -51,7 +56,7 @@ plt.legend()
 plt.show()
 
 print "average success rate: " + str(sum(rewards_list)/num_episodes * 100) + "%"
-print "best epoch: " + str(max(running_rewards) * 100) + "%"
+print "best epoch: " + str(max(running_rewards)) + "%"
 
 print 'final Q-table values:'
 print Q
