@@ -1,7 +1,7 @@
 # Reinforcement learner based on Andrej Karpathy's Pong from Pixels: http://karpathy.github.io/2016/05/31/rl/
 # and Dhruv Parthasarathy's implementation: https://medium.com/@dhruvp/how-to-write-a-neural-network-to-play-pong-from-scratch-956b57d4f6e0
 
-# TODO: add performance visualization graph over time
+# TODO: add performance visualization
 
 import gym
 import numpy as np
@@ -37,7 +37,7 @@ batch_size = 10 # num episodes per weight update
 gamma = .99 # discount rate reward
 decay_rate = .99 # decay factor for RMSProp
 learning_rate = 1e-4
-resume = True # resume from previous checkpoint?
+resume = False # resume from previous checkpoint?
 render = True # set to True to watch the game
 
 # initialize weights
@@ -131,7 +131,6 @@ def discount_rewards(r):
         discounted_sum = discounted_sum * gamma + r[t]
         discounted_r[t] = discounted_sum
     return discounted_r
-
 
 def policy_backward(episode_hs, episode_dlogps):
     '''calculate gradient. walkthrough: http://neuralnetworksanddeeplearning.com/chap2.html '''
