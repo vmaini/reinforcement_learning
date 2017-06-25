@@ -15,9 +15,9 @@ learning_rate = .8
 discount_rate = .95
 num_episodes = 2000
 
-# list to contain total rewards & steps per episode
-
 rewards_list = []
+running_reward = 0
+running_rewards = []
 
 for i in range(num_episodes):
     s = env.reset() # state in Q(s,a)
@@ -43,9 +43,15 @@ for i in range(num_episodes):
             break
     rewards_list.append(reward_sum)
 
-plt.hist(rewards_list)
+
+plt.hist(rewards_list, label = "num episodes", facecolor='g', alpha=.6)
+plt.title('Q-table performance: FrozenLake-v0')
+plt.xlabel('reward')
+plt.legend()
 plt.show()
 
-print 'average reward: ' + str(sum(rewards_list)/num_episodes)
+print "average success rate: " + str(sum(rewards_list)/num_episodes * 100) + "%"
+print "best epoch: " + str(max(running_rewards) * 100) + "%"
+
 print 'final Q-table values:'
 print Q
