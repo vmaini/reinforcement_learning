@@ -124,14 +124,14 @@ def discount_rewards(r):
     OUTPUT:
     - 1D numpy array of discounted rewards
     '''
-    discounted_rewards = np.zeros_like(r)
+    discounted_r = np.zeros_like(r)
     discounted_sum = 0
 
-    for t in reversed(xrange(0,r.size)): #going backwards thru each time step...
-        if r[t] != 0: discounted_sum = 0 # if the reward wasn't zero, game over --> reset sum
-        discounted_sum = discounted_sum * gamma + r[t] # applies discount rate iteratively at each time step; later time steps will be multiplied by gamma many times
-        discounted_rewards[t] = discounted_sum
-    return discounted_rewards
+    for t in reversed(xrange(0, r.size)):
+        discounted_sum = discounted_sum * gamma + r[t]
+        discounted_r[t] = discounted_sum
+    return discounted_r
+
 
 def policy_backward(episode_hs, episode_dlogps):
     '''calculate gradient. walkthrough: http://neuralnetworksanddeeplearning.com/chap2.html '''
