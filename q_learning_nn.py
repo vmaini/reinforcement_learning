@@ -11,11 +11,12 @@ env = gym.make('FrozenLake-v0')
 tf.reset_default_graph()
 render = False # set to True to visualize the game
 
-# one-layer network
-#
-# X [1,16] -- input, one-hot state vector
-# W [16,4]  B [4]
-# Q_out [1x4] -- Q-values for each output
+'''
+NETWORK ARCHITECTURE
+X [1,16] -- input, one-hot state vector
+W [16,4]  B [4]
+Q_out [1x4] -- Q-values for each output
+'''
 
 X = tf.placeholder(shape = [1,16],dtype=tf.float32)
 W = tf.Variable(tf.random_uniform([16,4],0,0.01))
@@ -80,7 +81,6 @@ for i in xrange(num_episodes):
     j_list.append(j)
     rewards_list.append(reward_sum)
     running_reward += reward_sum
-
 
     if i % 100 == 0:
         running_rewards.append(running_reward)
