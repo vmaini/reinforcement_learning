@@ -31,7 +31,7 @@ train_step = trainer.minimize(loss)
 # hyperparameters
 discount_rate = 0.99
 epsilon = 0.1
-num_episodes = 2000
+num_episodes = 3000
 
 j_list = []
 rewards_list = []
@@ -80,11 +80,17 @@ for i in xrange(num_episodes):
     j_list.append(j)
     rewards_list.append(reward_sum)
     running_reward += reward_sum
-    running_rewards.append(running_reward)
+
 
     if i % 100 == 0:
+        running_rewards.append(running_reward)
         print "epoch %d reward: %d" % (i/100, running_reward)
         running_reward = 0
 
 print "average success rate: " + str(sum(rewards_list)/num_episodes * 100) + "%"
-print "best epoch: " + str(max(running_rewards) * 100) + "%"
+print "best epoch: " + str(max(running_rewards)) + "%"
+
+# plt.plot(j_list, color='g', label='num steps per episode')
+plt.plot(running_rewards, color='g', label='running reward')
+plt.legend()
+plt.show()

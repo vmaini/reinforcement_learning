@@ -42,10 +42,10 @@ for i in range(num_episodes):
         if done:
             break
     rewards_list.append(reward_sum)
-    running_rewards.append(running_reward)
-
     running_reward += reward_sum
+
     if i % 100 == 0:
+        running_rewards.append(running_reward)
         print "epoch %d reward: %d" % (i/100, running_reward)
         running_reward = 0
 
