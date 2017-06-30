@@ -98,8 +98,7 @@ update_grads = optimizer.apply_gradients(zip(batch_grad, tvars))
 
 '''
 MODEL NETWORK
-- Set up RNN architecture
-
+- Set up model network architecture
 INPUT: current state, action
 OUTPUT: observation, reward, done state
 
@@ -166,12 +165,13 @@ real_episodes = 1
 batch_size = real_batch_size
 
 #settings for model observation vs. real environment observation, model training vs. policy training
+# start by training model of how the world works --> use this to train a policy
 draw_from_model = False
 train_model = True
 train_policy = False
 switch_point = 1
 
-render = False
+render = True
 
 # graph execution
 sess = tf.Session()
@@ -184,7 +184,10 @@ grad_buffer = sess.run(tvars) # remember, tvars = weights
 grad_buffer = reset_grad_buffer(grad_buffer)
 
 while episode_number <= 5000:
-    if render: env.render()
+
+    # render game after performance is acceptably high
+    if (reward_sum/batch_size > 150 and draw_from_model == False) or render == True:
+        env.render()
 
     x = np.reshape(observation, [1,4])
 
@@ -192,7 +195,7 @@ while episode_number <= 5000:
     tfprob = sess.run(Y,feed_dict={X:x})
     action = 1 if np.random.uniform() < tfprob else 0
 
-    # record intermediates for backrpop
+    # record intermediates for backprop at end of episode
     xs.append(x)
     y = 1 if action == 0 else 0
     ys.append(y)
@@ -213,7 +216,7 @@ while episode_number <= 5000:
             real_episodes += 1
         episode_number += 1
 
-    # stack inputs, hidden states, action gradients, rewards
+    # stack inputs, hidden states, action gradients, rewards for the episode, use these for backwards apss
 
         epx = np.vstack(xs)
         epy = np.vstack(ys)
@@ -237,11 +240,11 @@ while episode_number <= 5000:
 
         if train_policy:
             discounted_epr = discount_rewards(epr).astype('float32')
+            # normalize rewards
             discounted_epr -= np.mean(discounted_epr)
             discounted_epr /= np.std(discounted_epr)
             tGrad = sess.run(new_grads,feed_dict={X: epx, Y_: epy, advantages: discounted_epr})
 
-             # If gradients becom too large, end training process
             if np.sum(tGrad[0] == tGrad[0]) == 0:
                 break
             for ix,grad in enumerate(tGrad):
@@ -268,10 +271,20 @@ while episode_number <= 5000:
             train_policy = not train_policy
 
         if draw_from_model == True:
-            observation = np.random.uniform(-0.1,0.1,[4]) # Generate reasonable starting point
+            observation = np.random.uniform(-0.1,0.1,[4]) # generate starting point for model
             batch_size = model_batch_size
         else:
             observation = env.reset()
             batch_size = real_batch_size
 
 print real_episodes
+
+# visualize performance in real environment & model
+plt.figure(figsize=(8, 12))
+for i in range(6):
+    plt.subplot(6, 2, 2*i + 1)
+    plt.plot(pState[:,i])
+    plt.subplot(6,2,2*i+1)
+    plt.plot(state_nextsAll[:,i])
+plt.tight_layout()
+plt.show()
