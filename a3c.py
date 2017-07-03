@@ -147,7 +147,7 @@ class Worker():
         # update global network with gradients
 
         rnn_state = self.local_AC.state_init
-        feed_dict = {self.local_AC.taarget_v: discounted_rewards, self.locaal_AC.inputs:np.vstack(observations), self.local_AC.advantages:advantages, self.local_AC.state_in[0]:rnn_state[0], self.local_AC.state_in[1]:rnn_state[1]}
+        feed_dict = {self.local_AC.taarget_v: discounted_rewards, self.local_AC.inputs:np.vstack(observations), self.local_AC.advantages:advantages, self.local_AC.state_in[0]:rnn_state[0], self.local_AC.state_in[1]:rnn_state[1]}
 
         v_l, p_l, e_l, g_n, v_n = sess.run([self.local_AC.value_loss, self.local_AC.policy_loss, self.local_AC.entropy, self.local_AC.grad_norms, self.local_AC.var_norms, self.local_AAC.apply_grads], feed_dict = feed_dict)
 
